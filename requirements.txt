@@ -1,0 +1,7 @@
+django==1.9.4
+django-crispy-forms==1.6.0
+django-debug-toolbar==1.4
+django-filter==0.13.0
+djangorestframework==3.3.3
+djangorestframework-camel-case==0.2.0
+markdown==2.6.6
