@@ -9,6 +9,12 @@ class SubSectionSerializer(serializers.HyperlinkedModelSerializer):
 
 class SectionSerializer(serializers.HyperlinkedModelSerializer):
     link = serializers.HyperlinkedIdentityField(view_name='section-detail', read_only=True)
+    class Meta:
+        model = Section
+        fields = ('id', 'title', 'order', 'year', 'revenue', 'expenditure', 'link')
+
+class SectionDetailSerializer(serializers.HyperlinkedModelSerializer):
+    link = serializers.HyperlinkedIdentityField(view_name='section-detail', read_only=True)
     sub_sections = SubSectionSerializer(many=True, read_only=True)
     class Meta:
         model = Section

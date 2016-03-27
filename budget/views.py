@@ -1,6 +1,6 @@
 from .models import Section, SubSection
 from rest_framework import viewsets
-from.serializers import SectionSerializer, SubSectionSerializer
+from.serializers import SectionSerializer, SectionDetailSerializer, SubSectionSerializer
 
 from django.http import Http404
 from rest_framework import mixins
@@ -24,7 +24,7 @@ class SectionList(generics.ListAPIView):
 
 class SectionDetail(generics.RetrieveAPIView):
     queryset = Section.objects.order_by('order').all()
-    serializer_class = SectionSerializer
+    serializer_class = SectionDetailSerializer
 
 class SubSectionDetail(generics.RetrieveAPIView):
     queryset = SubSection.objects.order_by('order').all()

@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'rest_framework',
+    'webapp.apps.WebappConfig',
     'budget.apps.BudgetConfig',
     'crispy_forms',
     'django.contrib.admin',
@@ -57,12 +58,12 @@ MIDDLEWARE_CLASSES = [
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.BrowsableAPIRenderer',
-        'djangorestframework_camel_case.render.CamelCaseJSONRenderer', # Any other renders
+        'djangorestframework_camel_case.render.CamelCaseJSONRenderer',
     ),
     'DEFAULT_PARSER_CLASSES': (
-        'djangorestframework_camel_case.parser.CamelCaseJSONParser', # Any other parsers
+        'djangorestframework_camel_case.parser.CamelCaseJSONParser',
     ),
-    'PAGE_SIZE': 10
+    'PAGE_SIZE': 20
 }
 
 ROOT_URLCONF = 'durbanbudget.urls'
