@@ -27,10 +27,17 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+BOWER_INSTALLED_APPS = (
+    'jquery',
+    'lodash',
+    'd3',
+    'bootstrap'
+)
 
 # Application definition
 
 INSTALLED_APPS = [
+    'djangobower',
     'rest_framework',
     'webapp.apps.WebappConfig',
     'budget.apps.BudgetConfig',
@@ -130,6 +137,13 @@ USE_L10N = True
 
 USE_TZ = True
 
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'djangobower.finders.BowerFinder',
+]
+
+BOWER_COMPONENTS_ROOT = os.path.join(BASE_DIR, 'components')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
