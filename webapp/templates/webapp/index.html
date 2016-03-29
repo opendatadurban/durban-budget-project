@@ -5,17 +5,12 @@
 <head>
   <meta charset="utf-8">
   <title>OpenBudget Durban</title>
-  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.2.2/jquery.min.js" charset="utf-8"></script>
-  <script src="//cdn.jsdelivr.net/lodash/4.6.1/lodash.min.js" charset="utf-8"></script>
-  <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
-  <link rel="stylesheet"
-        href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
-        integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
-        crossorigin="anonymous">
-  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"
-          integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS"
-          crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="{% static "webapp/styles.css" %}" media="screen" title="no title" charset="utf-8">
+  <script src="{% static 'webapp/jquery.min.js' %}" charset="utf-8"></script>
+  <script src="{% static 'webapp/lodash.min.js' %}" charset="utf-8"></script>
+  <script src="{% static 'webapp/d3.v3.min.js' %}" charset="utf-8"></script>
+  <link rel="stylesheet" href="{% static 'webapp/bootstrap.min.css' %}" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+  <script src="{% static 'webapp/bootstrap.min.js' %}" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="{% static 'webapp/styles.css' %}" media="screen" title="no title" charset="utf-8">
 </head>
 
 <body>
@@ -31,7 +26,7 @@
       </div>
     </div>
   </div>
-  <script src="{% static "webapp/graphs.js" %}" charset="utf-8"></script>
+  <script src="{% static 'webapp/graphs.js' %}" charset="utf-8"></script>
   <script type="text/javascript">
     Promise.resolve($.ajax("/api/budget/sections.json", {
         data: {
