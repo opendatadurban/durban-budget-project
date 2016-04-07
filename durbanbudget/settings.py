@@ -27,17 +27,17 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-BOWER_INSTALLED_APPS = (
-    'jquery',
-    'lodash',
-    'd3',
-    'bootstrap'
-)
+# BOWER_INSTALLED_APPS = (
+#     'jquery',
+#     'lodash',
+#     'd3',
+#     'bootstrap',
+#     'rxjs',
+# )
 
 # Application definition
 
 INSTALLED_APPS = [
-    'djangobower',
     'rest_framework',
     'webapp.apps.WebappConfig',
     'budget.apps.BudgetConfig',
@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'debug_toolbar',
+    'webpack_loader',
 ]
 
 MIDDLEWARE_CLASSES = [
@@ -137,15 +138,23 @@ USE_L10N = True
 
 USE_TZ = True
 
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'assets'),
+)
+
 STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'djangobower.finders.BowerFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder'
 ]
-
-BOWER_COMPONENTS_ROOT = os.path.join(BASE_DIR, 'components')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'BUNDLE_DIR_NAME': 'bundles/',
+        'STATS_FILE': os.path.join(BASE_DIR, 'webpack-stats.json')
+    }
+}

@@ -1,7 +1,9 @@
+import csv
+import re
 from django.contrib import admin
-from django.contrib.admin.views.main import ERROR_FLAG
 from django.conf.urls import url
 from django.core.urlresolvers import reverse
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.utils.encoding import force_text
@@ -9,17 +11,17 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_protect
 from django.db import transaction
 from .models import Section, SubSection
-import csv
-import re
 
 csrf_protect_m = method_decorator(csrf_protect)
 
 IS_POPUP_VAR = '_popup'
 TO_FIELD_VAR = '_to_field'
 
+
 class SubSectionInline(admin.TabularInline):
     model = SubSection
     extra = 1
+
 
 @admin.register(Section)
 class SectionAdmin(admin.ModelAdmin):
@@ -30,7 +32,9 @@ class SectionAdmin(admin.ModelAdmin):
     def get_urls(self):
         urls = super(self.__class__, self).get_urls()
         my_urls = [
-            url(r'^bulk_add/$', self.admin_site.admin_view(self.bulk_add), name="budget_section_bulk_add")
+            url(r'^bulk_add/$',
+                self.admin_site.admin_view(self.bulk_add),
+                name="budget_section_bulk_add")
         ]
         return my_urls + urls
 
@@ -47,7 +51,8 @@ class SectionAdmin(admin.ModelAdmin):
         section = Section.objects.get(order=section_order, year=year)
 
         try:
-            sub_section = SubSection.objects.get(order=order, section_id=section.pk)
+            sub_section = SubSection.objects.get(
+                order=order, section_id=section.pk)
             sub_section.title = title
         except SubSection.DoesNotExist:
             sub_section = SubSection(title=title, order=order)
@@ -70,24 +75,26 @@ class SectionAdmin(admin.ModelAdmin):
             raise PermissionDenied
 
         context = dict(
-           self.admin_site.each_context(request),
-           opts=opts,
-           add=True,
-           change=False,
-           is_popup=(IS_POPUP_VAR in request.POST or
-                     IS_POPUP_VAR in request.GET),
-           module_name=force_text(opts.verbose_name_plural),
-           has_add_permission= self.has_add_permission(request),
-           has_change_permission= self.has_change_permission(request, None),
-           has_delete_permission= self.has_delete_permission(request, None),
-           save_as= self.save_as,
-           save_on_top= self.save_on_top,
+            self.admin_site.each_context(request),
+            opts=opts,
+            add=True,
+            change=False,
+            is_popup=(IS_POPUP_VAR in request.POST or
+                      IS_POPUP_VAR in request.GET),
+            module_name=force_text(opts.verbose_name_plural),
+            has_add_permission=self.has_add_permission(request),
+            has_change_permission=self.has_change_permission(request, None),
+            has_delete_permission=self.has_delete_permission(request, None),
+            save_as=self.save_as,
+            save_on_top=self.save_on_top,
         )
 
         if request.method == 'POST':
-            title_regex = re.compile("Vote ([\d]*) -(.*)", re.IGNORECASE)
-            sub_title_regex = re.compile("([\d]*)\.([\d]*)(.*)", re.IGNORECASE)
-            csv_string = request.FILES.get('bulk_csv').read().decode().split('\n')
+            title_regex = re.compile(r"Vote ([\d]*) -(.*)", re.IGNORECASE)
+            sub_title_regex = re.compile(
+                r"([\d]*)\.([\d]*)(.*)", re.IGNORECASE)
+            csv_string = request.FILES.get(
+                'bulk_csv').read().decode().split('\n')
             is_expenditure = True
             read_header = False
             years = []
@@ -130,11 +137,13 @@ class SectionAdmin(admin.ModelAdmin):
 
                         self.upsert_sub_section(year,
                                                 int(s.groups()[0]),
-                                                s.groups()[2].replace("-", "").strip(),
+                                                s.groups()[2].replace(
+                                                    "-", "").strip(),
                                                 int(s.groups()[1]),
                                                 revenue,
                                                 expenditure)
-            return HttpResponseRedirect(reverse('admin:%s_%s_changelist' % (opts.app_label, opts.model_name),
-                                        current_app=self.admin_site.name))
+            return HttpResponseRedirect(reverse('admin:%s_%s_changelist' %
+                                                (opts.app_label, opts.model_name),
+                                                current_app=self.admin_site.name))
 
         return TemplateResponse(request, "admin/budget/bulk_add.html", context)

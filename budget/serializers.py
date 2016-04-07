@@ -1,5 +1,5 @@
-from .models import Section, SubSection
 from rest_framework import serializers
+from .models import Section, SubSection
 
 class SubSectionSerializer(serializers.HyperlinkedModelSerializer):
     link = serializers.HyperlinkedIdentityField(view_name='subsection-detail', read_only=True)

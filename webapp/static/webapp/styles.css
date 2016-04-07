@@ -19,6 +19,11 @@ g.segment:hover > g {
 }
 g.segment > g > text {
   fill: white;
-  text-anchor: middle;
   font-family: sans-serif;
+}
+g.segment > g.left > text {
+  text-anchor: start;
+}
+g.segment > g.right > text {
+  text-anchor: end;
 }
