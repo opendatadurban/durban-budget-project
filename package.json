@@ -8,8 +8,7 @@
     "postinstall": " ./node_modules/typings/dist/bin.js install && npm run webpack"
   },
   "description": "",
-  "dependencies": {},
-  "devDependencies": {
+  "dependencies": {
     "bootstrap": "^3.3.6",
     "bootstrap-webpack": "0.0.5",
     "css-loader": "^0.23.1",
