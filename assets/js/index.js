@@ -1,4 +1,5 @@
-var pieChart = require('./graphs').pieChart;
+var PieChart = require('./graphs').PieChart;
+var Section = require('./graphs').Section;
 var _ = require('lodash');
 require('expose?$!expose?jQuery!jquery');
 var Rx = require('rxjs');
@@ -11,19 +12,18 @@ Promise.resolve($.ajax("/api/budget/sections.json", {
   }))
   .then(function(response) {
     var expenditure = _.map(response.results, function(val) {
-      return [val.title, val.expenditure];
+      return new Section(val.title, val.expenditure);
     });
     var revenue = _.map(response.results, function(val) {
-      return [val.title, val.revenue];
+      return new Section(val.title, val.revenue);
     });
-
-    pieChart(".chart", Rx.Observable.create(function(observer) {
-      observer.next(expenditure);
-      setTimeout(function() {
-        observer.next(revenue);
-      }, 2000);
-    }));
+    
+    var pieChart = new PieChart(".chart");
+    pieChart.updateData(expenditure);
+    setTimeout(function() {
+      pieChart.updateData(revenue);
+    }, 2000);
   })
   .then(function(data) {}, function(error) {
-    console.log(error);
+    console.error(error);
   });

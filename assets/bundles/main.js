@@ -44,7 +44,8 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var pieChart = __webpack_require__(70).pieChart;
+	var PieChart = __webpack_require__(70).PieChart;
+	var Section = __webpack_require__(70).Section;
 	var _ = __webpack_require__(329);
 	__webpack_require__(330);
 	var Rx = __webpack_require__(72);
@@ -57,21 +58,20 @@
 	  }))
 	  .then(function(response) {
 	    var expenditure = _.map(response.results, function(val) {
-	      return [val.title, val.expenditure];
+	      return new Section(val.title, val.expenditure);
 	    });
 	    var revenue = _.map(response.results, function(val) {
-	      return [val.title, val.revenue];
+	      return new Section(val.title, val.revenue);
 	    });
-
-	    pieChart(".chart", Rx.Observable.create(function(observer) {
-	      observer.next(expenditure);
-	      setTimeout(function() {
-	        observer.next(revenue);
-	      }, 2000);
-	    }));
+	    
+	    var pieChart = new PieChart(".chart");
+	    pieChart.updateData(expenditure);
+	    setTimeout(function() {
+	      pieChart.updateData(revenue);
+	    }, 2000);
 	  })
 	  .then(function(data) {}, function(error) {
-	    console.log(error);
+	    console.error(error);
 	  });
 
 
@@ -152,167 +152,130 @@
 	var $ = __webpack_require__(71);
 	var Rx = __webpack_require__(72);
 	var d3 = __webpack_require__(328);
-	function getBB(selection) {
-	    selection.each(function (d) {
-	        d.bbox = this.getBBox();
-	    });
-	}
-	;
-	var getElementParentDimensions = function (selector) {
-	    var s = $(selector).parent();
-	    return {
-	        width: s.width(),
-	        height: s.height()
-	    };
-	};
-	var observeElementParentDimensions = function (selector) {
-	    return Rx.Observable.create(function (observer) {
-	        var currentDimensions = getElementParentDimensions(selector);
-	        observer.next(currentDimensions);
-	        setInterval(function () {
-	            var newDimensions = getElementParentDimensions(selector);
-	            if (newDimensions.height != currentDimensions.height ||
-	                newDimensions.width != currentDimensions.width) {
-	                observer.next(newDimensions);
-	                currentDimensions = newDimensions;
-	            }
-	        }, 100);
-	    });
-	};
-	var createGraph = function (selector, dimensions, data) {
-	    var width = dimensions.width;
-	    var height = Math.min(width, 750);
-	    var outerRadius = height / 2 - 20;
-	    var innerRadius = 10;
-	    var cornerRadius = 10;
-	    var pie = d3.layout.pie()
-	        .padAngle(0.01)
-	        .value(function (d) {
-	        return d[1];
-	    });
-	    var arc = d3.svg.arc()
-	        .padRadius(outerRadius.toString())
-	        .innerRadius(innerRadius);
-	    var group = d3.select(selector)
-	        .attr("width", width)
-	        .attr("height", height)
-	        .append("g")
-	        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
-	        .selectAll("g")
-	        .data(pie(data))
-	        .enter()
-	        .append("g")
-	        .attr("class", "segment")
-	        .on("mouseover", function () {
-	        var sel = d3.select(this);
-	        sel.each(function () {
-	            this.parentNode.appendChild(this);
+	var Section = (function () {
+	    function Section(title, amount) {
+	        this.title = title;
+	        this.amount = amount;
+	    }
+	    return Section;
+	}());
+	exports.Section = Section;
+	var PieChart = (function () {
+	    function PieChart(selector) {
+	        var _this = this;
+	        this.updateData = function (data) {
+	            _this.data = data;
+	            _this.element.html("");
+	            _this.createGraph();
+	        };
+	        this.getElementParentDimensions = function (selector) {
+	            var s = _this.element.parent();
+	            return {
+	                width: s.width(),
+	                height: s.height()
+	            };
+	        };
+	        this.observeElementParentDimensions = function (selector) {
+	            return Rx.Observable.create(function (observer) {
+	                $(window).resize(function () {
+	                    var newDimensions = _this.getElementParentDimensions(selector);
+	                    _this.dimensions = newDimensions;
+	                    setTimeout(function () {
+	                        observer.next(newDimensions);
+	                    }, 50);
+	                });
+	                _this.dimensions = _this.getElementParentDimensions(selector);
+	                observer.next(_this.dimensions);
+	            });
+	        };
+	        this.element = $(selector);
+	        this.dimensions = this.getElementParentDimensions(selector);
+	        this.observeElementParentDimensions(selector)
+	            .subscribe(function (dimensions) {
+	            _this.element.html("");
+	            _this.createGraph();
 	        });
-	    });
-	    group.append("path")
-	        .each(function (d) {
-	        d.outerRadius = outerRadius;
-	    })
-	        .attr("d", arc);
-	    var textGroup = group.append("g")
-	        .attr("transform", function (d) {
-	        var centroid = arc.centroid(d);
-	        if (centroid[0] < 0) {
-	            d3.select(this)
-	                .attr("class", "left");
-	        }
-	        else {
-	            d3.select(this)
-	                .attr("class", "right");
-	        }
-	        return "translate(" + centroid + ")";
-	    });
-	    textGroup.append("text")
-	        .attr("class", "text")
-	        .attr("dy", ".35em")
-	        .text(function (d) {
-	        return d.data[0] + " - R" + d.data[1] + "K";
-	    })
-	        .call(getBB);
-	    textGroup.insert("rect", "text")
-	        .attr("x", function (d) {
-	        return d.bbox.x - 4;
-	    })
-	        .attr("y", function (d) {
-	        return d.bbox.y - 4;
-	    })
-	        .attr("width", function (d) {
-	        return d.bbox.width + 8;
-	    })
-	        .attr("height", function (d) {
-	        return d.bbox.height + 8;
-	    });
-	};
-	var updateGraphDimensions = function (selector, dimensions) {
-	    var width = dimensions.width;
-	    var height = Math.min(dimensions.height, Math.min(width, 750));
-	    var outerRadius = height / 2 - 20;
-	    var innerRadius = 10;
-	    var cornerRadius = 10;
-	    var pie = d3.layout.pie()
-	        .padAngle(0.01)
-	        .value(function (d) {
-	        return d[1];
-	    });
-	    var arc = d3.svg.arc()
-	        .padRadius(outerRadius.toString())
-	        .innerRadius(innerRadius);
-	    var group = d3.select(selector)
-	        .attr("width", width)
-	        .attr("height", height)
-	        .select("g")
-	        .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
-	        .selectAll("g");
-	    group.select("path")
-	        .each(function (d) {
-	        d.outerRadius = outerRadius;
-	    })
-	        .attr("d", arc);
-	    var textGroup = group.select("g")
-	        .attr("transform", function (d) {
-	        return "translate(" + arc.centroid(d) + ")";
-	    });
-	    textGroup.select("text")
-	        .attr("class", "text")
-	        .attr("dy", ".35em")
-	        .text(function (d) {
-	        return d.data[0] + " - R" + d.data[1] + "K";
-	    }).call(getBB);
-	    textGroup.select("rect")
-	        .attr("x", function (d) {
-	        return d.bbox.x - 4;
-	    })
-	        .attr("y", function (d) {
-	        return d.bbox.y - 4;
-	    })
-	        .attr("width", function (d) {
-	        return d.bbox.width + 8;
-	    })
-	        .attr("height", function (d) {
-	        return d.bbox.height + 8;
-	    });
-	};
-	var updateGraphData = function (selector, dimensions, data) {
-	    $(selector).html("");
-	    createGraph(selector, dimensions, data);
-	};
-	function pieChart(selector, dataObservable) {
-	    var dimensions = getElementParentDimensions(selector);
-	    dataObservable.subscribe(function (data) {
-	        updateGraphData(selector, dimensions, data);
-	    });
-	    observeElementParentDimensions(selector)
-	        .subscribe(function (dimensions) {
-	        updateGraphDimensions(selector, dimensions);
-	    });
-	}
-	exports.pieChart = pieChart;
-	;
+	    }
+	    PieChart.prototype.createGraph = function () {
+	        if (this.data == null)
+	            return;
+	        var width = this.dimensions.width;
+	        var height = Math.min(width, 750);
+	        var outerRadius = height / 2 - 20;
+	        var innerRadius = 10;
+	        var cornerRadius = 10;
+	        var pie = d3.layout.pie()
+	            .padAngle(0.01)
+	            .value(function (d) {
+	            return d.amount;
+	        });
+	        var arc = d3.svg.arc()
+	            .padRadius(outerRadius.toString())
+	            .innerRadius(innerRadius);
+	        var group = d3.select(this.element.selector)
+	            .attr("width", width)
+	            .attr("height", height)
+	            .append("g")
+	            .attr("transform", "translate(" + width / 2 + "," + height / 2 + ")")
+	            .selectAll("g")
+	            .data(pie(this.data))
+	            .enter()
+	            .append("g")
+	            .attr("class", "segment")
+	            .on("mouseover", function () {
+	            var sel = d3.select(this);
+	            sel.each(function () {
+	                this.parentNode.appendChild(this);
+	            });
+	        });
+	        group.append("path")
+	            .each(function (d) {
+	            d.outerRadius = outerRadius;
+	        })
+	            .attr("d", arc);
+	        var textGroup = group.append("g")
+	            .attr("transform", function (d) {
+	            var centroid = arc.centroid(d);
+	            if (centroid[0] < 0) {
+	                d3.select(this)
+	                    .attr("class", "left");
+	            }
+	            else {
+	                d3.select(this)
+	                    .attr("class", "right");
+	            }
+	            return "translate(" + centroid + ")";
+	        });
+	        textGroup.append("text")
+	            .attr("class", "text")
+	            .attr("dy", ".35em")
+	            .text(function (d) {
+	            return d.data.title + " - R" + d.data.amount + "K";
+	        })
+	            .call(this.getBB);
+	        textGroup.insert("rect", "text")
+	            .attr("x", function (d) {
+	            return d.bbox.x - 4;
+	        })
+	            .attr("y", function (d) {
+	            return d.bbox.y - 4;
+	        })
+	            .attr("width", function (d) {
+	            return d.bbox.width + 8;
+	        })
+	            .attr("height", function (d) {
+	            return d.bbox.height + 8;
+	        });
+	    };
+	    PieChart.prototype.getBB = function (selection) {
+	        selection.each(function (d) {
+	            d.bbox = this.getBBox();
+	        });
+	    };
+	    ;
+	    return PieChart;
+	}());
+	exports.PieChart = PieChart;
 
 
 /***/ },
