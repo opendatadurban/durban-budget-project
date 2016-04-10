@@ -5,13 +5,18 @@ from rest_framework.reverse import reverse
 from rest_framework import filters
 
 from .models import Section, SubSection
-from .serializers import SectionSerializer, SectionDetailSerializer, SubSectionSerializer
+from .serializers import SectionSerializer, SectionDetailSerializer, SubSectionSerializer, BudgetYearSerializer
 
 @api_view(['GET'])
 def budget_root(request, format=None):
     return Response({
-        'sections': reverse('section-index', request=request, format=format)
+        'sections': reverse('section-list', request=request, format=format),
+        'years': reverse('year-list', request=request, format=format)
     })
+
+class YearList(generics.ListAPIView):
+    queryset = Section.objects.order_by('year').distinct('year').all()
+    serializer_class = BudgetYearSerializer
 
 class SectionList(generics.ListAPIView):
     queryset = Section.objects.order_by('order').all()

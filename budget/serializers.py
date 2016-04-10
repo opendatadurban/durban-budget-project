@@ -1,6 +1,10 @@
 from rest_framework import serializers
 from .models import Section, SubSection
 
+class BudgetYearSerializer(serializers.BaseSerializer):
+    def to_representation(self, obj):
+        return obj.year
+
 class SubSectionSerializer(serializers.HyperlinkedModelSerializer):
     link = serializers.HyperlinkedIdentityField(view_name='subsection-detail', read_only=True)
     class Meta:

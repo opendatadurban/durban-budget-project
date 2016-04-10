@@ -100,8 +100,12 @@ WSGI_APPLICATION = 'durbanbudget.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'opendata_budget',
+        'USER': 'opendata',
+        'PASSWORD': 'li9pwfLbJWlLXRlY7Da6',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
