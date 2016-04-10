@@ -1,29 +1,20 @@
-var PieChart = require('./graphs').PieChart;
-var Section = require('./graphs').Section;
-var _ = require('lodash');
+"use strict";
+var graphs_1 = require('./graphs');
 require('expose?$!expose?jQuery!jquery');
-var Rx = require('rxjs');
-require("bootstrap-webpack");
-
+require('bootstrap-webpack');
 Promise.resolve($.ajax("/api/budget/sections.json", {
     data: {
-      year: "2014/2015"
+        year: "2014/2015"
     }
-  }))
-  .then(function(response) {
-    var expenditure = _.map(response.results, function(val) {
-      return new Section(val.title, val.expenditure);
+}))
+    .then(function (response) {
+    var expenditure = response.results.map(function (val) {
+        return new graphs_1.Section(val.title, val.expenditure);
     });
-    var revenue = _.map(response.results, function(val) {
-      return new Section(val.title, val.revenue);
-    });
-    
-    var pieChart = new PieChart(".chart");
+    var pieChart = new graphs_1.PieChart(".chart");
     pieChart.updateData(expenditure);
-    setTimeout(function() {
-      pieChart.updateData(revenue);
-    }, 2000);
-  })
-  .then(function(data) {}, function(error) {
+})
+    .then(function (data) { }, function (error) {
     console.error(error);
-  });
+});
+//# sourceMappingURL=index.js.map

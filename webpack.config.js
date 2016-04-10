@@ -7,7 +7,7 @@ module.exports = {
   entry: './assets/js/index',
   output: {
     path: path.resolve('./assets/bundles/'),
-    filename: "[name].js"
+    filename: "[name].bundle.js"
   },
   resolve: {
     extensions: ['', '.webpack.js', '.web.js', '.ts', '.tsx', '.js']

@@ -218,3 +218,7 @@ jspm_packages
 .node_repl_history
 
 typings
+
+assets/bundles
+assets/js/*.js
+assets/js/*.js.map
