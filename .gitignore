@@ -224,3 +224,5 @@ webpack-stats.json
 assets/bundles
 assets/js/*.js
 assets/js/*.js.map
+
+.vscode
