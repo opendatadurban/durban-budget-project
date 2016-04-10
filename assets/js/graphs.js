@@ -1,6 +1,6 @@
 "use strict";
 var $ = require('jquery');
-var Rx = require('rx');
+var Rx = require('rxjs');
 var d3 = require('d3');
 function getBB(selection) {
     selection.each(function (d) {
@@ -18,12 +18,12 @@ var getElementParentDimensions = function (selector) {
 var observeElementParentDimensions = function (selector) {
     return Rx.Observable.create(function (observer) {
         var currentDimensions = getElementParentDimensions(selector);
-        observer.onNext(currentDimensions);
+        observer.next(currentDimensions);
         setInterval(function () {
             var newDimensions = getElementParentDimensions(selector);
             if (newDimensions.height != currentDimensions.height ||
                 newDimensions.width != currentDimensions.width) {
-                observer.onNext(newDimensions);
+                observer.next(newDimensions);
                 currentDimensions = newDimensions;
             }
         }, 100);

@@ -29,5 +29,8 @@ module.exports = {
       test: /\.svg$/,
       loader: "file-loader"
     }]
-  }
+  },
+  plugins: [
+    new BundleTracker({path: __dirname, filename: './webpack-stats.json'})
+  ]
 }

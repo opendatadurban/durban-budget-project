@@ -1,5 +1,5 @@
 import * as $ from 'jquery';
-import * as Rx from 'rx';
+import * as Rx from 'rxjs';
 import * as d3 from 'd3';
 
 interface PieChartArc<T> extends d3.layout.pie.Arc<T> {
@@ -23,12 +23,12 @@ var getElementParentDimensions = (selector) => {
 var observeElementParentDimensions = (selector) => {
   return Rx.Observable.create((observer) => {
     var currentDimensions = getElementParentDimensions(selector);
-    observer.onNext(currentDimensions);
+    observer.next(currentDimensions);
     setInterval(() => {
       var newDimensions = getElementParentDimensions(selector);
       if (newDimensions.height != currentDimensions.height ||
         newDimensions.width != currentDimensions.width) {
-        observer.onNext(newDimensions);
+        observer.next(newDimensions);
         currentDimensions = newDimensions;
       }
     }, 100);

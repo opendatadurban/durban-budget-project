@@ -1,7 +1,7 @@
 var pieChart = require('./graphs').pieChart;
 var _ = require('lodash');
 require('expose?$!expose?jQuery!jquery');
-var Rx = require('rx');
+var Rx = require('rxjs');
 require("bootstrap-webpack");
 
 Promise.resolve($.ajax("/api/budget/sections.json", {
@@ -18,9 +18,9 @@ Promise.resolve($.ajax("/api/budget/sections.json", {
     });
 
     pieChart(".chart", Rx.Observable.create(function(observer) {
-      observer.onNext(expenditure);
+      observer.next(expenditure);
       setTimeout(function() {
-        observer.onNext(revenue);
+        observer.next(revenue);
       }, 2000);
     }));
   })
