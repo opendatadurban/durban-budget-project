@@ -5,9 +5,11 @@ var BundleTracker = require('webpack-bundle-tracker');
 module.exports = {
   context: __dirname,
   entry: './assets/js/index',
+  devtool: '#source-map',
   output: {
     path: path.resolve('./assets/bundles/'),
-    filename: "[name].bundle.js"
+    filename: "[name].bundle.js",
+    sourceMapFilename: "[name].map.js"
   },
   resolve: {
     extensions: ['', '.webpack.js', '.web.js', '.ts', '.tsx', '.js']
