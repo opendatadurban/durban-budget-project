@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -23,17 +24,9 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'po6#^&m_or0n_h5k#_sftj&1(p=+qo3rhp$k_+qv7#p+^p3&*('
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG') is not None and os.environ.get('DEBUG').lower().strip() == 'true'
 
-ALLOWED_HOSTS = []
-
-# BOWER_INSTALLED_APPS = (
-#     'jquery',
-#     'lodash',
-#     'd3',
-#     'bootstrap',
-#     'rxjs',
-# )
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -109,6 +102,9 @@ DATABASES = {
     }
 }
 
+DB_FROM_ENV = dj_database_url.config()
+DATABASES['default'].update(DB_FROM_ENV)
+
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
@@ -155,6 +151,8 @@ STATICFILES_FINDERS = [
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 WEBPACK_LOADER = {
     'DEFAULT': {

@@ -226,3 +226,5 @@ assets/js/*.js
 assets/js/*.js.map
 
 .vscode
+
+staticfiles
