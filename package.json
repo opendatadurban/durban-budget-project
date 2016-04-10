@@ -5,8 +5,7 @@
     "start": "npm run webpack:w",
     "webpack": "webpack",
     "webpack:w": "webpack -w",
-    "typings": "typings",
-    "postinstall": "typings install && npm run webpack"
+    "postinstall": " ./node_modules/typings/dist/bin.js install && npm run webpack"
   },
   "description": "",
   "dependencies": {},
