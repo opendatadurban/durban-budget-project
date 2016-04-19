@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "scripts": {
     "start": "npm run webpack:w",
+    "typings": "typings",
     "webpack": "webpack",
     "webpack:w": "webpack -w",
-    "postinstall": " ./node_modules/typings/dist/bin.js install && npm run webpack"
+    "postinstall": "npm run typings install && npm run webpack"
   },
   "description": "",
   "dependencies": {
