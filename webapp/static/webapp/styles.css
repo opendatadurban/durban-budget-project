@@ -1,0 +1,29 @@
+g.segment > path {
+  fill: #ccc;
+  stroke: #333;
+  stroke-width: 0.5px;
+  transition: fill 250ms linear;
+  transition-delay: 150ms;
+}
+g.segment:hover > path {
+  fill: #999;
+  stroke: #000;
+  transition-delay: 0;
+}
+g.segment > g {
+  fill: #333;
+  display: none;
+}
+g.segment:hover > g {
+  display: inherit;
+}
+g.segment > g > text {
+  fill: white;
+  font-family: sans-serif;
+}
+g.segment > g.left > text {
+  text-anchor: start;
+}
+g.segment > g.right > text {
+  text-anchor: end;
+}
