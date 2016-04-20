@@ -5,16 +5,18 @@ g.segment > path {
   transition: fill 250ms linear;
   transition-delay: 150ms;
 }
-g.segment:hover > path {
+g.segment.hover > path {
   fill: #999;
   stroke: #000;
   transition-delay: 0;
 }
 g.segment > g {
   fill: #333;
+}
+g.segment.allow-hidden > g {
   display: none;
 }
-g.segment:hover > g {
+g.segment.allow-hidden.hover > g {
   display: inherit;
 }
 g.segment > g > text {

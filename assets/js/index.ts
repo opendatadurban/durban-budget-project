@@ -19,6 +19,4 @@ Promise.resolve($.ajax("/api/budget/sections.json", {
 
   expenditureChart.updateData(expenditure);
   revenueChart.updateData(revenue);
-}).then(function(data) { }, function(error) {
-  console.error(error);
 });
