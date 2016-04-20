@@ -33,6 +33,11 @@ module.exports = {
     }]
   },
   plugins: [
-    new BundleTracker({path: __dirname, filename: './webpack-stats.json'})
+    new BundleTracker({path: __dirname, filename: './webpack-stats.json'}),
+    new webpack.optimize.UglifyJsPlugin({
+        compress: {
+            warnings: false
+        }
+    })
   ]
 }
