@@ -69,10 +69,17 @@ export class PieChart {
       .enter()
       .append("g")
       .attr("class", "segment")
-      .on("mouseover", function() {
+      .on("mouseover", function () {
         var sel = d3.select(this);
-        sel.each(function() {
+        sel.each(function () {
           this.parentNode.appendChild(this);
+          $(this).addClass('hover');
+        });
+      })
+      .on("mouseleave", function () {
+        var sel = d3.select(this);
+        sel.each(function () {
+          $(this).removeClass('hover');
         });
       });
 
@@ -83,7 +90,7 @@ export class PieChart {
       .attr("d", <any>arc);
 
     var textGroup = group.append("g")
-      .attr("transform", function(d) {
+      .attr("transform", function (d) {
         var centroid = arc.centroid(<any>d);
         if (centroid[0] < 0) {
           d3.select(this)
@@ -116,6 +123,8 @@ export class PieChart {
       .attr("height", (d: any) => {
         return d.bbox.height + 8;
       });
+
+    group.attr("class", `${group.attr("class")} allow-hidden`);
   }
 
   private getElementParentDimensions = (selector): GraphDimensions => {
@@ -141,8 +150,8 @@ export class PieChart {
   }
 
   private getBB(selection) {
-    selection.each(function(d) {
+    selection.each(function (d) {
       d.bbox = this.getBBox();
     });
-  };
+  }
 }
